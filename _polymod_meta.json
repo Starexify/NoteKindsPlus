@@ -1,6 +1,6 @@
 {
-  "title": "NoteKinds Plus",
-  "description": "A library of utility note kinds that modders can use in their mods.",
+  "title": "NoteKinds+",
+  "description": "A library of extra note kinds that modders and charters can easily use in their mods.",
   "contributors": [
     {
       "name": "ImVeryBad",
@@ -8,6 +8,6 @@
     }
   ],
   "api_version": "0.7.5",
-  "mod_version": "0.0.0",
+  "mod_version": "0.0.1",
   "license": "MIT"
 }
