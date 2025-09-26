@@ -13,8 +13,8 @@ class NoteKindsHandler extends ScriptedModule {
         if (playState == null || playState.currentStage == null) return;
 
         var hitter:BaseCharacter;
-        if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) hitter = PlayState.instance.currentStage.getBoyfriend();
-        else hitter = PlayState.instance.currentStage.getDad();
+        if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) hitter = playState.currentStage.getBoyfriend();
+        else hitter = playState.currentStage.getDad();
 
         if (hitter == null) return;
         switch (event.note.kind) {
