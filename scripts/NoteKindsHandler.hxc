@@ -1,0 +1,26 @@
+import funkin.modding.module.ScriptedModule;
+import funkin.modding.events.ScriptEvent;
+import funkin.play.PlayState;
+import funkin.play.character.BaseCharacter;
+import funkin.play.notes.Strumline;
+import flixel.FlxG;
+
+class NoteKindsHandler extends ScriptedModule {
+    var playState(get, never):PlayState;
+    function get_playState():PlayState { return PlayState.instance; }
+
+    override public function onNoteHit(event:HitNoteScriptEvent) {
+        if (playState == null || playState.currentStage == null) return;
+
+        var hitter:BaseCharacter;
+        if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) hitter = PlayState.instance.currentStage.getBoyfriend();
+        else hitter = PlayState.instance.currentStage.getDad();
+
+        if (hitter == null) return;
+        switch (event.note.kind) {
+            case "no-anim":
+                hitter.canPlayOtherAnims = false;
+                FlxG.signals.postUpdate.addOnce(() -> hitter.canPlayOtherAnims = true);
+        }
+    }
+}

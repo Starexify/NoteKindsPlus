@@ -1,0 +1,33 @@
+import funkin.play.notes.notekind.ScriptedNoteKind;
+import funkin.modding.events.ScriptEvent;
+import flixel.FlxG;
+import funkin.play.PlayState;
+import funkin.play.character.BaseCharacter;
+import funkin.play.notes.Strumline;
+
+class AltAnimationNote extends ScriptedNoteKind {
+    var DIRECTION_NAMES:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT"];
+
+    function new() {
+        super("alt-anim", "Alt Animation");
+    }
+
+    override public function onNoteHit(event:HitNoteScriptEvent) {
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+
+        var hitter:BaseCharacter;
+        if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) hitter = PlayState.instance.currentStage.getBoyfriend();
+        else hitter = PlayState.instance.currentStage.getDad();
+
+        if (hitter == null) return;
+
+        var dirName:String = DIRECTION_NAMES[event.note.direction];
+        if (event.note.isHoldNote) dirName += "-hold";
+        var animToPlay:String = "sing" + dirName + "-alt";
+
+        if (!hitter.animation.getNameList().contains(animToPlay)) return;
+        hitter.canPlayOtherAnims = false;
+        hitter.animation.play(animToPlay, true);
+        FlxG.signals.postUpdate.addOnce(() -> hitter.canPlayOtherAnims = true);
+    }
+}

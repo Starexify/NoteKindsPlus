@@ -1,0 +1,7 @@
+import funkin.play.notes.notekind.ScriptedNoteKind;
+
+class NoAnimationNote extends ScriptedNoteKind {
+    function new() {
+        super("no-anim", "No Animation");
+    }
+}
