@@ -28,6 +28,7 @@ class AltAnimationNote extends ScriptedNoteKind {
         if (!hitter.animation.getNameList().contains(animToPlay)) return;
         hitter.canPlayOtherAnims = false;
         hitter.animation.play(animToPlay, true);
+        hitter.applyAnimationOffsets(animToPlay);
         FlxG.signals.postUpdate.addOnce(() -> hitter.canPlayOtherAnims = true);
     }
 }
