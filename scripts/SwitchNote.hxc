@@ -1,0 +1,40 @@
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import funkin.modding.events.ScriptEvent;
+import funkin.play.notes.notekind.ScriptedNoteKind;
+import funkin.play.notes.Strumline;
+import funkin.play.PlayState;
+
+class SwitchNote extends ScriptedNoteKind {
+    public static var START_DELAY:Float = 1.15;
+    public static var SWITCH_DUR:Float = 0.15;
+
+    static function getEase(t:Float):Float { return FlxEase.smoothStepIn(t); }
+
+    function new() {
+        super("switch", "Switch Note");
+    }
+
+    override public function onNoteIncoming(event:NoteScriptEvent) {
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+
+        var noteX = event.note.x;
+        var holdX;
+        if (event.note.isHoldNote) holdX = event.note.holdNoteSprite.x;
+        if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) {
+            event.note.x = PlayState.instance.opponentStrumline.x + PlayState.instance.opponentStrumline.getXPos(event.note.direction) + Strumline.INITIAL_OFFSET;
+            FlxTween.tween(event.note, {x: noteX}, SWITCH_DUR, {ease: getEase, startDelay: START_DELAY});
+            if (event.note.isHoldNote) {
+                event.note.holdNoteSprite.x = PlayState.instance.opponentStrumline.x + PlayState.instance.opponentStrumline.getXPos(event.note.direction) + Strumline.INITIAL_OFFSET;
+                FlxTween.tween(event.note.holdNoteSprite, {x: holdX}, SWITCH_DUR, {ease: getEase, startDelay: START_DELAY});
+            }
+        } else {
+            event.note.x = PlayState.instance.playerStrumline.x + PlayState.instance.playerStrumline.getXPos(event.note.direction) + Strumline.INITIAL_OFFSET;
+            FlxTween.tween(event.note, {x: noteX}, SWITCH_DUR, { ease: getEase, startDelay: START_DELAY});
+            if (event.note.isHoldNote) {
+                event.note.holdNoteSprite.x = PlayState.instance.playerStrumline.x + PlayState.instance.playerStrumline.getXPos(event.note.direction) + Strumline.INITIAL_OFFSET;
+                FlxTween.tween(event.note.holdNoteSprite, {x: holdX}, SWITCH_DUR, {ease: getEase, startDelay: START_DELAY});
+            }
+        }
+    }
+}
