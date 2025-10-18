@@ -12,13 +12,19 @@ class GfSingNote extends ScriptedNoteKind {
         if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
 
         var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
+        if (gf == null) return;
 
         var dirName:String = NoteKindsHandler.DIRECTION_NAMES[event.note.direction];
-        if (event.note.isHoldNote && gf.animation.getNameList().contains(dirName + NoteKindsHandler.HOLD_SUFFIX)) dirName += NoteKindsHandler.HOLD_SUFFIX;
+        if (event.note.isHoldNote && gf.animation.getNameList().contains(dirName + NoteKindsHandler.HOLD_SUFFIX)) {
+            dirName += NoteKindsHandler.HOLD_SUFFIX;
+        }
 
         var animToPlay:String = "sing" + dirName;
 
         if (!gf.animation.getNameList().contains(animToPlay)) return;
+        
         gf.playAnimation(animToPlay);
+        
+        gf.holdTimer = 0;
     }
 }
