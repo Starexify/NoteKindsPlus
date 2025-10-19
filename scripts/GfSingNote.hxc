@@ -24,7 +24,27 @@ class GfSingNote extends ScriptedNoteKind {
         if (!gf.animation.getNameList().contains(animToPlay)) return;
         
         gf.playAnimation(animToPlay);
-        
         gf.holdTimer = 0;
+    }
+
+    override public function onUpdate(event:UpdateScriptEvent) {
+        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+
+        var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
+        if (gf == null) return;
+
+        if (!gf.isSinging()) return;
+
+        var opponentStrumline = PlayState.instance.opponentStrumline;
+        if (opponentStrumline != null && opponentStrumline.holdNotes != null) {
+            for (holdNote in opponentStrumline.holdNotes.members) {
+                if (holdNote == null || !holdNote.alive) continue;
+                
+                if (holdNote.hitNote && !holdNote.missedNote && holdNote.sustainLength > 0) {
+                    gf.holdTimer = 0;
+                    return;
+                }
+            }
+        }
     }
 }
