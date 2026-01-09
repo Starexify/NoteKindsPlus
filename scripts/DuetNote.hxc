@@ -14,10 +14,11 @@ class DuetNote extends ScriptedNoteKind {
         var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
 
         var dirName:String = NoteKindsHandler.DIRECTION_NAMES[event.note.direction];
-        if (event.note.isHoldNote && gf.animation.getNameList().contains(dirName + NoteKindsHandler.HOLD_SUFFIX)) dirName += NoteKindsHandler.HOLD_SUFFIX;
+        if (event.note.isHoldNote && gf.hasAnimation(dirName + NoteKindsHandler.HOLD_SUFFIX)) dirName += NoteKindsHandler.HOLD_SUFFIX;
 
         var animToPlay:String = "sing" + dirName;
 
-        if (gf.animation.getNameList().contains(animToPlay)) gf.playAnimation(animToPlay);
+        if (!gf.hasAnimation(animToPlay)) return;
+        gf.playAnimation(animToPlay);
     }
 }

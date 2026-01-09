@@ -1,35 +1,7 @@
 import funkin.play.notes.notekind.ScriptedNoteKind;
-import funkin.modding.events.ScriptEvent;
-import flixel.FlxG;
-import funkin.play.PlayState;
-import funkin.play.character.BaseCharacter;
-import funkin.play.notes.Strumline;
 
 class AltAnimationNote extends ScriptedNoteKind {
-    var altSuffix = "-alt";
-
     function new() {
-        super("alt-anim", "Alt Animation");
-    }
-
-    override public function onNoteHit(event:HitNoteScriptEvent) {
-        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
-
-        var hitter:BaseCharacter;
-        if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) hitter = PlayState.instance.currentStage.getBoyfriend();
-        else hitter = PlayState.instance.currentStage.getDad();
-
-        if (hitter == null) return;
-
-        var dirName:String = NoteKindsHandler.DIRECTION_NAMES[event.note.direction];
-        if (event.note.isHoldNote && hitter.animation.getNameList().contains(dirName + NoteKindsHandler.HOLD_SUFFIX)) dirName += NoteKindsHandler.HOLD_SUFFIX;
-
-        var animToPlay:String = "sing" + dirName + altSuffix;
-
-        if (!hitter.animation.getNameList().contains(animToPlay)) return;
-        hitter.canPlayOtherAnims = false;
-        hitter.animation.play(animToPlay, true);
-        hitter.applyAnimationOffsets(animToPlay);
-        FlxG.signals.postUpdate.addOnce(() -> hitter.canPlayOtherAnims = true);
+        super("alt-anim", "Alt Animation", null, null, false, "-alt");
     }
 }

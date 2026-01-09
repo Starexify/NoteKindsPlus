@@ -5,7 +5,7 @@ import funkin.play.PlayState;
 
 class GfSingNote extends ScriptedNoteKind {
     function new() {
-        super("gf-sing", "Girlfriend Sing");
+        super("gf-sing", "Girlfriend Sing", null, [], true);
     }
 
     override public function onNoteHit(event:HitNoteScriptEvent) {
@@ -14,11 +14,11 @@ class GfSingNote extends ScriptedNoteKind {
         var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
 
         var dirName:String = NoteKindsHandler.DIRECTION_NAMES[event.note.direction];
-        if (event.note.isHoldNote && gf.animation.getNameList().contains(dirName + NoteKindsHandler.HOLD_SUFFIX)) dirName += NoteKindsHandler.HOLD_SUFFIX;
+        if (event.note.isHoldNote && gf.hasAnimation(dirName + NoteKindsHandler.HOLD_SUFFIX)) dirName += NoteKindsHandler.HOLD_SUFFIX;
 
         var animToPlay:String = "sing" + dirName;
 
-        if (!gf.animation.getNameList().contains(animToPlay)) return;
+        if (!gf.hasAnimation(animToPlay)) return;
         gf.playAnimation(animToPlay);
     }
 }
