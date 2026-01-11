@@ -2,6 +2,7 @@ import funkin.play.notes.notekind.ScriptedNoteKind;
 
 class AltAnimationNote extends ScriptedNoteKind {
     function new() {
-        super("alt-anim", "Alt Animation", null, null, false, "-alt");
+        super("alt-anim", "Alt Animation");
+        this.suffix = "-alt";
     }
 }
