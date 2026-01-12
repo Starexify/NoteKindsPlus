@@ -1,4 +1,3 @@
-class NoteKindsHandler {
+class NoteKindsConstants {
     public static var DIRECTION_NAMES:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT"];
-    public static var HOLD_SUFFIX = "-hold";
 }
