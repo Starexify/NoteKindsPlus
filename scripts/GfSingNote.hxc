@@ -8,7 +8,7 @@ class GfSingNote extends ScriptedNoteKind {
     function new() {
         super("gf-sing", "Girlfriend Sing");
         this.noanim = true;
-        this.suffix = "-gf";
+        //this.suffix = "gf";
     }
 
     override public function onNoteHit(event:HitNoteScriptEvent) {
