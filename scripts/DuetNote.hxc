@@ -5,21 +5,42 @@ import funkin.play.PlayState;
 import funkin.util.Constants;
 
 class DuetNote extends ScriptedNoteKind {
-    function new() {
-        super("duet", "Duet Note");
+  function new() {
+    super("duet", "Duet Note");
+  }
+
+  override public function onNoteHit(event:HitNoteScriptEvent) {
+    if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+
+    var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
+    if (gf == null) return;
+
+    var dirName:String = NoteKindsConstants.DIRECTION_NAMES[event.note.direction];
+    if (event.note.isHoldNote && gf.hasAnimation(dirName + Constants.ANIMATION_HOLD_SUFFIX)) dirName += Constants.ANIMATION_HOLD_SUFFIX;
+
+    var animToPlay:String = "sing" + dirName;
+
+    if (!gf.hasAnimation(animToPlay)) return;
+    gf.playAnimation(animToPlay);
+  }
+
+  override public function onUpdate(event:UpdateScriptEvent) {
+    if (PlayState.instance == null) return;
+    var currentStage = PlayState.instance.currentStage;
+    if (currentStage == null) return;
+
+    var gf:BaseCharacter = currentStage.getGirlfriend();
+    if (gf == null) return;
+
+    for (strumline in [PlayState.instance.playerStrumline, PlayState.instance.opponentStrumline]) {
+      for (holdNote in strumline.holdNotes.members) {
+        if (holdNote == null || !holdNote.alive || holdNote.noteData == null) continue;
+
+        // Make sure gf keeps singing while the note is held.
+        if (holdNote.hitNote && !holdNote.missedNote && holdNote.sustainLength > 0) {
+          if (gf.isSinging() && PlayState.instance.isBotPlayMode) gf.holdTimer = 0;
+        }
+      }
     }
-
-    override public function onNoteHit(event:HitNoteScriptEvent) {
-        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
-
-        var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
-
-        var dirName:String = NoteKindsConstants.DIRECTION_NAMES[event.note.direction];
-        if (event.note.isHoldNote && gf.hasAnimation(dirName + Constants.ANIMATION_HOLD_SUFFIX)) dirName += Constants.ANIMATION_HOLD_SUFFIX;
-
-        var animToPlay:String = "sing" + dirName;
-
-        if (!gf.hasAnimation(animToPlay)) return;
-        gf.playAnimation(animToPlay);
-    }
+  }
 }

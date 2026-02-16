@@ -3,25 +3,53 @@ import funkin.play.character.BaseCharacter;
 import funkin.play.notes.notekind.ScriptedNoteKind;
 import funkin.play.PlayState;
 import funkin.util.Constants;
+import funkin.play.notes.Strumline;
 
 class GfSingNote extends ScriptedNoteKind {
-    function new() {
-        super("gf-sing", "Girlfriend Sing");
-        this.noanim = true;
-        //this.suffix = "gf";
+  function new() {
+    super("gf-sing", "Girlfriend Sing");
+    this.noanim = true;
+  }
+
+  override public function onNoteHit(event:HitNoteScriptEvent) {
+    if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+
+    var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
+    if (gf == null) return;
+
+    var dirName:String = NoteKindsConstants.DIRECTION_NAMES[event.note.direction];
+    if (event.note.isHoldNote && gf.hasAnimation(dirName + Constants.ANIMATION_HOLD_SUFFIX)) dirName += Constants.ANIMATION_HOLD_SUFFIX;
+
+    var animToPlay:String = "sing" + dirName;
+
+    if (!gf.hasAnimation(animToPlay)) return;
+
+    // Make bf no longer sing when gf starts singing
+    if (event.note.noteData.getMustHitNote(Strumline.KEY_COUNT)) {
+      var bf:BaseCharacter = PlayState.instance.currentStage.getBoyfriend();
+      bf.anim?.curAnim?.name = 'idle';
     }
 
-    override public function onNoteHit(event:HitNoteScriptEvent) {
-        if (PlayState.instance == null || PlayState.instance.currentStage == null) return;
+    gf.playAnimation(animToPlay);
+  }
 
-        var gf:BaseCharacter = PlayState.instance.currentStage.getGirlfriend();
+  override public function onUpdate(event:UpdateScriptEvent) {
+    if (PlayState.instance == null) return;
+    var currentStage = PlayState.instance.currentStage;
+    if (currentStage == null) return;
 
-        var dirName:String = NoteKindsConstants.DIRECTION_NAMES[event.note.direction];
-        if (event.note.isHoldNote && gf.hasAnimation(dirName + Constants.ANIMATION_HOLD_SUFFIX)) dirName += Constants.ANIMATION_HOLD_SUFFIX;
+    var gf:BaseCharacter = currentStage.getGirlfriend();
+    if (gf == null) return;
 
-        var animToPlay:String = "sing" + dirName;
+    for (strumline in [PlayState.instance.playerStrumline, PlayState.instance.opponentStrumline]) {
+      for (holdNote in strumline.holdNotes.members) {
+        if (holdNote == null || !holdNote.alive || holdNote.noteData == null) continue;
 
-        if (!gf.hasAnimation(animToPlay)) return;
-        gf.playAnimation(animToPlay);
+        // Make sure gf keeps singing while the note is held.
+        if (holdNote.hitNote && !holdNote.missedNote && holdNote.sustainLength > 0) {
+          if (gf.isSinging() || PlayState.instance.isBotPlayMode) gf.holdTimer = 0;
+        }
+      }
     }
+  }
 }
