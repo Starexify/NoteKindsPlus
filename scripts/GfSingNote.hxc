@@ -43,7 +43,7 @@ class GfSingNote extends ScriptedNoteKind {
 
     for (strumline in [PlayState.instance.playerStrumline, PlayState.instance.opponentStrumline]) {
       for (holdNote in strumline.holdNotes.members) {
-        if (holdNote == null || !holdNote.alive || holdNote.noteData == null) continue;
+        if (holdNote == null || !holdNote.alive || holdNote.noteData == null || holdNote.noteData.kind != this.noteKind) continue;
 
         // Make sure gf keeps singing while the note is held.
         if (holdNote.hitNote && !holdNote.missedNote && holdNote.sustainLength > 0) {
